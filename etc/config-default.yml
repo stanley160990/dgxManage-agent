@@ -1,0 +1,9 @@
+master:
+  location: /srv/Data/Project/2021/Gunadarma/DGX-Manage/GPU-Agent
+  docker_sock: unix://var/run/docker.sock
+  master_url: http://localhost:8181
+  obs_url: http://localhost:9000
+  userdir_path: /raid/user_volume
+
+agent:
+  id_mesin: f647fd75-e38e-482d-b10b-7c6541bebd47

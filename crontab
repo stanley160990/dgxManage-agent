@@ -1,0 +1,30 @@
+# stop or Remove image
+0 16 * * 1  python3 remove_script.py 1
+0 16 * * 2  python3 remove_script.py 2
+0 16 * * 3  python3 remove_script.py 3
+0 16 * * 4  python3 remove_script.py 4
+0 16 * * 5  python3 remove_script.py 5
+
+# mig Configuratin termination
+0 17 * * *  mig_terminate.sh  
+
+# mig creation
+0 5 * * 1   mig.sh 1
+0 5 * * 2   mig.sh 2
+0 5 * * 3   mig.sh 3
+0 5 * * 4   mig.sh 4
+0 5 * * 5   mig.sh 5
+
+# build image
+0 6 * * 1   python3 build_script.py build 1
+0 6 * * 2   python3 build_script.py build 2
+0 6 * * 3   python3 build_script.py build 3
+0 6 * * 4   python3 build_script.py build 4
+0 6 * * 5   python3 build_script.py build 5
+
+# run container
+0 7 * * 1   python3 build_script.py run 1
+0 7 * * 2   python3 build_script.py run 2
+0 7 * * 3   python3 build_script.py run 3
+0 7 * * 4   python3 build_script.py run 4
+0 7 * * 5   python3 build_script.py run 5
