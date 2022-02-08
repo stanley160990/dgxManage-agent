@@ -102,7 +102,7 @@ elif run_type == "run":
         else:
             os.mkdir(user_container_volume)
         
-        countainer_volume = [(user_container_volume, "/root", "rw")] 
+        countainer_volume = [(user_container_volume, "/root", "rw"), (Config().master_datarepo_path, "/repo","ro")] 
 
         docker.container.run(image_name, detach=True, name=container_name, gpus=gpu, publish=port_publish, cpus=doc_cpu, memory=doc_ram, volumes=countainer_volume)
 
