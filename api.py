@@ -19,7 +19,6 @@ class Create_dockerfile(BaseModel):
     id_hari : str
     username: str
     DockerImages: str
-    id_schedule: str
 
 class Create_minio(BaseModel):
     username: str
