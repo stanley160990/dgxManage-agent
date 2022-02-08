@@ -10,7 +10,7 @@ from click import command
 from python_on_whales import Volume, docker
 
 from libs.Config import Config
-from libs.Connections import Psql, Docker
+from libs.Connections import Docker
 from libs.Random import Rand_socket
 from libs.REST import REST
 
