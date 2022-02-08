@@ -10,4 +10,5 @@ class Config(object):
         self.master_docker_sock = cfg["master"]["docker_sock"]
         self.master_url = cfg["master"]["master_url"]
         self.master_datarepo_path = cfg["master"]["datarepo_path"]
+        self.master_userdir_path = cfg['master']['userdir_path']
         self.agent_id_mensin = cfg["agent"]["id_mesin"]

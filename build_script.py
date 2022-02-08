@@ -23,8 +23,9 @@ docker_con = Docker(Config().master_docker_sock).connect()
 if run_type == "build":
     url_build_data = Config().master_url + "/build/" + hari + "/" + Config().agent_id_mensin
     build_data = REST("GET", url_build_data, {}, {}).send()
-
+    
     for data in build_data.json()['data']:
+        print(data['docker_file'])
         if data["tag"] is None:
             tag = 1
         else:
@@ -33,10 +34,10 @@ if run_type == "build":
         images_name = data['username'] + ":" + str(tag)
 
 
-        docker_con.images.build(dockerfile=data["docker_file"], tag=images_name) 
+        docker_con.images.build(path=data['working_dir'], dockerfile=data["docker_file"], tag=images_name) 
 
         patern = "#token:"
-        file = open(data["working_dir"], "r")
+        file = open(data["working_dir"] + "/" + data['docker_file'], "r")
 
         token = ''
         for line in file:
@@ -96,7 +97,7 @@ elif run_type == "run":
         
         folder_location = Config().master_userdir_path + "/" + data['username']
         user_container_volume = folder_location + "/" + container_name
-        if os.path.isfile(folder_location) is False:
+        if os.path.isdir(folder_location) is False:
             os.mkdir(folder_location)
             os.mkdir(user_container_volume)
         else:

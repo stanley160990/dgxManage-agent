@@ -52,7 +52,7 @@ async def dockerFile_data(create_dockerfile: Create_dockerfile):
         else:
             os.remove(Docker_files)
             f = open(Docker_files, "w")
-    f.write("#token:"+ token)
+    f.write("#token:"+ token + "\n")
     f.write("FROM " + create_dockerfile.DockerImages + "\n")
     f.write("RUN mkdir /repo\n")
     f.write("RUN pip install jupyterlab\n")
