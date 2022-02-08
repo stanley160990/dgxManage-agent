@@ -33,7 +33,7 @@ if run_type == "build":
         images_name = data['username'] + ":" + str(tag)
 
 
-        docker_con.images.build(path=data["working_dir"], tag=images_name) 
+        docker_con.images.build(dockerfile=data["docker_file"], tag=images_name) 
 
         patern = "#token:"
         file = open(data["working_dir"], "r")
@@ -95,7 +95,7 @@ elif run_type == "run":
             print("jumat")
         
         folder_location = Config().master_userdir_path + "/" + data['username']
-        user_container_volume = folder_location + "/" + image_name
+        user_container_volume = folder_location + "/" + container_name
         if os.path.isfile(folder_location) is False:
             os.mkdir(folder_location)
             os.mkdir(user_container_volume)

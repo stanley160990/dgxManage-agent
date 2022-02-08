@@ -19,6 +19,7 @@ class Create_dockerfile(BaseModel):
     id_hari : str
     username: str
     DockerImages: str
+    id_schedule: str
 
 class Create_minio(BaseModel):
     username: str
@@ -31,8 +32,17 @@ app = FastAPI()
 @app.post('/Dockerfile')
 async def dockerFile_data(create_dockerfile: Create_dockerfile):
     working_folder = Config().master_location + "/Dockerfiles/" + create_dockerfile.id_hari + "/" + create_dockerfile.username
-    Docker_files = working_folder + "/Dockerfile"
-    print(working_folder)
+    
+    # Generate Random String
+    letters = string.ascii_lowercase
+    random_letter =  ( ''.join(random.choice(letters) for i in range(10)) )
+
+    # Generate Token
+    hash_token = hashlib.sha1(random_letter.encode('utf-8')).hexdigest()
+    token = str(hash_token)
+    
+    Docker_files = working_folder + "/Dockerfile-" + token
+    
     f = ''
     if os.path.isdir(working_folder) is False:
         os.mkdir(working_folder)
@@ -43,14 +53,6 @@ async def dockerFile_data(create_dockerfile: Create_dockerfile):
         else:
             os.remove(Docker_files)
             f = open(Docker_files, "w")
-
-    # Generate Random String
-    letters = string.ascii_lowercase
-    random_letter =  ( ''.join(random.choice(letters) for i in range(10)) )
-
-    # Generate Token
-    hash_token = hashlib.sha1(random_letter.encode('utf-8')).hexdigest()
-    token = str(hash_token)
     f.write("#token:"+ token)
     f.write("FROM " + create_dockerfile.DockerImages + "\n")
     f.write("RUN mkdir /repo\n")
@@ -58,7 +60,7 @@ async def dockerFile_data(create_dockerfile: Create_dockerfile):
     f.write('CMD ["jupyter", "lab", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root", "--ServerApp.token=\''+ token +'\'"]')
     f.close()
 
-    return_data = {'error': False, 'working_folder': working_folder}
+    return_data = {'error': False, 'working_folder': working_folder, 'docker_file': "Dockerfile-" + token}
 
     return return_data
 
