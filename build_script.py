@@ -42,7 +42,7 @@ if run_type == "build":
         token = ''
         for line in file:
             if re.search(patern, line):
-                token = line
+                token = line.rstrip('\n')
 
         token = token.replace("#token:", "")
         headers = {'Content-Type': 'application/json'}

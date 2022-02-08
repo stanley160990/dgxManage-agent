@@ -56,7 +56,7 @@ async def dockerFile_data(create_dockerfile: Create_dockerfile):
     f.write("FROM " + create_dockerfile.DockerImages + "\n")
     f.write("RUN mkdir /repo\n")
     f.write("RUN pip install jupyterlab\n")
-    f.write('CMD ["jupyter", "lab", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root", "--ServerApp.token=\''+ token +'\'"]')
+    f.write('CMD ["jupyter", "lab", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root", "--ServerApp.token='+ token+ '"]')
     f.close()
 
     return_data = {'error': False, 'working_folder': working_folder, 'docker_file': "Dockerfile-" + token}
