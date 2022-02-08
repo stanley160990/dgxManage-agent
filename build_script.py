@@ -2,6 +2,9 @@
 import sys
 import os
 import json
+import string
+import hashlib
+import random
 
 import re
 
@@ -46,7 +49,7 @@ if run_type == "build":
 
         token = token.replace("#token:", "")
         headers = {'Content-Type': 'application/json'}
-        payload = {'img_name':data["username"], 'tag': str(tag), 'id':data["id"], 'token': token}
+        payload = {'img_name':data["username"], 'tag': str(tag), 'id':data["id"]}
         
         url_update_data = Config().master_url + "/build"
         response = REST('POST', url_update_data, headers, json.dumps(payload)).send()
@@ -103,15 +106,22 @@ elif run_type == "run":
         else:
             os.mkdir(user_container_volume)
         
-        countainer_volume = [(user_container_volume, "/root", "rw"), (Config().master_datarepo_path, "/repo","ro")] 
+        # Generate Random String
+        letters = string.ascii_lowercase
+        random_letter =  ( ''.join(random.choice(letters) for i in range(10)) )
 
-        docker.container.run(image_name, detach=True, name=container_name, gpus=gpu, publish=port_publish, cpus=doc_cpu, memory=doc_ram, volumes=countainer_volume)
+        # Generate Token
+        hash_token = hashlib.sha1(random_letter.encode('utf-8')).hexdigest()
+        token = str(hash_token)
+
+        countainer_volume = [(user_container_volume, "/workspace/data", "rw"), (Config().master_datarepo_path, "/repo","ro")] 
+
+        docker.container.run(image_name, detach=True, name=container_name, gpus=gpu, publish=port_publish, cpus=doc_cpu, memory=doc_ram, volumes=countainer_volume, envs={'JUPYTER_TOKEN': token})
 
         durasi_aktual = data['durasi'] - 1
 
-
         headers = {'Content-Type': 'application/json'}
-        payload = {'id_container':container_name, 'durasi_aktual':durasi_aktual, 'id':data['id'], 'port': free_socket}
+        payload = {'id_container':container_name, 'durasi_aktual':durasi_aktual, 'id':data['id'], 'port': free_socket, 'token': token}
         
         url_update_data = Config().master_url + "/run"
         response = REST('POST', url_update_data, headers, json.dumps(payload)).send()
