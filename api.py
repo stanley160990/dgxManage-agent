@@ -3,7 +3,6 @@ from typing import AsyncContextManager
 from fastapi import Request, FastAPI, Depends, File, Form, UploadFile, status
 from fastapi.param_functions import Query
 from libs.Config import Config
-from libs.Connections import Psql
 from pydantic import BaseModel
 
 import uvicorn
