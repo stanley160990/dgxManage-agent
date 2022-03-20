@@ -5,6 +5,7 @@ import json
 import string
 import hashlib
 import random
+import uuid
 
 import re
 
@@ -34,22 +35,22 @@ if run_type == "build":
         else:
             tag = int(data["tag"]) + 1
         
-        images_name = data['username'] + ":" + str(tag)
-
+        images_id = uuid.uuid4()
+        images_name = str(images_id) + ":" + str(tag)
 
         docker_con.images.build(path=data['working_dir'], dockerfile=data["docker_file"], tag=images_name) 
 
-        patern = "#token:"
-        file = open(data["working_dir"] + "/" + data['docker_file'], "r")
+        # patern = "#token:"
+        # file = open(data["working_dir"] + "/" + data['docker_file'], "r")
 
-        token = ''
-        for line in file:
-            if re.search(patern, line):
-                token = line.rstrip('\n')
+        # token = ''
+        # for line in file:
+        #     if re.search(patern, line):
+        #         token = line.rstrip('\n')
 
-        token = token.replace("#token:", "")
+        # token = token.replace("#token:", "")
         headers = {'Content-Type': 'application/json'}
-        payload = {'img_name':data["username"], 'tag': str(tag), 'id':data["id"]}
+        payload = {'img_name':images_id, 'tag': str(tag), 'id':data["id"]}
         
         url_update_data = Config().master_url + "/build"
         response = REST('POST', url_update_data, headers, json.dumps(payload)).send()
@@ -64,11 +65,12 @@ elif run_type == "run":
         url_mig_data = Config().master_url + "/mig/" + data['id_schedule']
         mig_data = REST("GET", url_mig_data, {}, {}).send()
         
-        image_name = data['username'] + ":" + str(data['tag'])
+        image_name = data['img_name'] + ":" + str(data['tag'])
 
+        container_id = uuid.uuid4()
 
         gpu = '"device='+ mig_data.json()['mig_device'] +'"'
-        container_name = data['username'] + "-" + data['id_schedule']
+        container_name = str(container_id)
         free_socket = Rand_socket("free").random()
         port_publish = [("0.0.0.0:" + str(free_socket), 8888, "tcp")]
 
@@ -97,8 +99,12 @@ elif run_type == "run":
             doc_cpu = 25
             doc_ram = '100g'
             print("jumat")
+        elif hari == "10":
+            #16 user Penelitian
+            doc_cpu = 12
+            doc_ram = "55g"
         
-        folder_location = Config().master_userdir_path + "/" + data['username']
+        folder_location = Config().master_userdir_path 
         user_container_volume = folder_location + "/" + container_name
         if os.path.isdir(folder_location) is False:
             os.mkdir(folder_location)
@@ -114,7 +120,7 @@ elif run_type == "run":
         hash_token = hashlib.sha1(random_letter.encode('utf-8')).hexdigest()
         token = str(hash_token)
 
-        countainer_volume = [(user_container_volume, "/workspace/data", "rw"), (Config().master_datarepo_path, "/repo","ro")] 
+        countainer_volume = [(user_container_volume, "/workspace/data", "rw"), (Config().master_datarepo_path, "/workspace/repo","ro")] 
 
         docker.container.run(image_name, detach=True, name=container_name, gpus=gpu, publish=port_publish, cpus=doc_cpu, memory=doc_ram, volumes=countainer_volume, envs={'JUPYTER_TOKEN': token})
 

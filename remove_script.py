@@ -8,7 +8,7 @@ from libs.REST import REST
 hari = sys.argv[2]
 docker_con = Docker(Config().master_docker_sock).connect()
 
-url_run_data = Config().master_url + "/run/" + hari + "/" + Config().agent_id_mensin
+url_run_data = Config().master_url + "/run/" + hari + "/" + Config().agent_id_mensin + "/running" 
 run_data = REST("GET", url_run_data, {}, {}).send()
 
 
@@ -18,6 +18,7 @@ for data in run_data.json()['data']:
         docker_con.containers.remove(data['id_container'])
         image_name = data['username'] + ":" + str(data['tag'])
         docker_con.images.remove(image_name)
+    
     
     headers = {'Content-Type': 'application/json'}
     payload = {'id':data['id'], 'id_schedule':data['id_schedule']}

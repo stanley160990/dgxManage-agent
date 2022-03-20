@@ -78,18 +78,19 @@ case $hari in
         nvidia-smi mig -i 6 -cgi 0 -C
         nvidia-smi mig -i 7 -cgi 0 -C
         ;;
+    "10")
+        echo "penelitian\n"
+        nvidia-smi mig -i 0 -cgi 9,9 -C
+        nvidia-smi mig -i 1 -cgi 9,9 -C
+        nvidia-smi mig -i 2 -cgi 9,9 -C
+        nvidia-smi mig -i 3 -cgi 9,9 -C
+        nvidia-smi mig -i 4 -cgi 9,9 -C
+        nvidia-smi mig -i 5 -cgi 9,9 -C
+        nvidia-smi mig -i 6 -cgi 9,9 -C
+        nvidia-smi mig -i 7 -cgi 9,9 -C
     *)
         echo "salah"
 esac
 
-
-
-
-
-
-
-
-
-
-
-
+systemctl start nvsm
+systemctl start nvidia-dcgm
