@@ -23,7 +23,7 @@ hari = sys.argv[2]
 docker_con = Docker(Config().master_docker_sock).connect()
 
 if run_type == "build":
-    url_build_data = Config().master_url + "/build/" + hari + "/" + Config().agent_id_mensin
+    url_build_data = Config().master_url + "/approval/" + hari + "/" + Config().agent_id_mensin
     build_data = REST("GET", url_build_data, {}, {}).send()
     
     for data in build_data.json()['data']:
@@ -48,7 +48,7 @@ if run_type == "build":
         print (response.json())
 elif run_type == "run":
 
-    url_run_data = Config().master_url + "/run/" + hari + "/" + Config().agent_id_mensin + "/imageCreated"
+    url_run_data = Config().master_url + "/build/" + hari + "/" + Config().agent_id_mensin + "/imageCreated"
     run_data = REST("GET", url_run_data, {}, {}).send()
 
     for data in run_data.json()['data']:
@@ -114,10 +114,8 @@ elif run_type == "run":
 
         docker.container.run(image_name, detach=True, name=container_name, gpus=gpu, publish=port_publish, cpus=doc_cpu, memory=doc_ram, volumes=countainer_volume, envs={'JUPYTER_TOKEN': token})
 
-        durasi_aktual = data['durasi'] - 1
-
         headers = {'Content-Type': 'application/json'}
-        payload = {'id_container':container_name, 'durasi_aktual':durasi_aktual, 'id':data['id'], 'port': free_socket, 'token': token}
+        payload = {'id_container':container_name, 'id':data['id'], 'port': free_socket, 'token': token}
         
         url_update_data = Config().master_url + "/run"
         response = REST('POST', url_update_data, headers, json.dumps(payload)).send()
