@@ -27,20 +27,14 @@ if run_type == "build":
     build_data = REST("GET", url_build_data, {}, {}).send()
     
     for data in build_data.json()['data']:
-        print(data['docker_file'])
-        if data["tag"] is None:
-            tag = 1
-        else:
-            tag = int(data["tag"]) + 1
-        
-        images_id = uuid.uuid4()
-        images_name = str(images_id) + ":" + str(tag)
+        tag = uuid.uuid4()
+        images_name = str(data['id']) + ":" + str(tag)
 
         docker_con.images.build(path=data['working_dir'], dockerfile=data["docker_file"], tag=images_name) 
 
         # token = token.replace("#token:", "")
         headers = {'Content-Type': 'application/json'}
-        payload = {'img_name':images_id, 'tag': str(tag), 'id':data["id"]}
+        payload = {'img_name':data['id'], 'tag': str(tag), 'id':data["id"]}
         
         url_update_data = Config().master_url + "/build"
         response = REST('POST', url_update_data, headers, json.dumps(payload)).send()
@@ -48,7 +42,7 @@ if run_type == "build":
         print (response.json())
 elif run_type == "run":
 
-    url_run_data = Config().master_url + "/build/" + hari + "/" + Config().agent_id_mensin + "/imageCreated"
+    url_run_data = Config().master_url + "/build/" + hari + "/" + Config().agent_id_mensin
     run_data = REST("GET", url_run_data, {}, {}).send()
 
     for data in run_data.json()['data']:
