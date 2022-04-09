@@ -10,10 +10,7 @@ import os
 import random
 import string
 import hashlib
-import shlex
-import subprocess
 import hashlib
-import datetime
 
 class Create_dockerfile(BaseModel):
     id_hari : str

@@ -1,4 +1,3 @@
-
 import sys
 import os
 import json
@@ -7,7 +6,6 @@ import hashlib
 import random
 import uuid
 
-import re
 
 from click import command
 
@@ -39,14 +37,6 @@ if run_type == "build":
         images_name = str(images_id) + ":" + str(tag)
 
         docker_con.images.build(path=data['working_dir'], dockerfile=data["docker_file"], tag=images_name) 
-
-        # patern = "#token:"
-        # file = open(data["working_dir"] + "/" + data['docker_file'], "r")
-
-        # token = ''
-        # for line in file:
-        #     if re.search(patern, line):
-        #         token = line.rstrip('\n')
 
         # token = token.replace("#token:", "")
         headers = {'Content-Type': 'application/json'}
@@ -133,3 +123,6 @@ elif run_type == "run":
         response = REST('POST', url_update_data, headers, json.dumps(payload)).send()
 
         print(response.json())
+    
+elif run_type == "":
+    print("stop")
