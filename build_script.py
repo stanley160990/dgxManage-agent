@@ -88,6 +88,7 @@ elif run_type == "run":
             doc_cpu = 12
             doc_ram = "55g"
         elif hari == "11":
+            #16 user Penelitian
             doc_cpu = 16
             doc_ram = "60g"
         
