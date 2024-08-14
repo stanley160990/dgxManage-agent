@@ -25,11 +25,11 @@ docker_con = Docker(Config().master_docker_sock).connect()
 if run_type == "build":
     url_build_data = Config().master_url + "/approval/" + hari + "/" + Config().agent_id_mensin
     build_data = REST("GET", url_build_data, {}, {}).send()
-    
+    print(build_data.json()) 
     for data in build_data.json()['data']:
         tag = uuid.uuid4()
         images_name = str(data['id']) + ":" + str(tag)
-
+        print(data["working_dir"])
         docker_con.images.build(path=data['working_dir'], dockerfile=data["docker_file"], tag=images_name) 
 
         # token = token.replace("#token:", "")
@@ -87,6 +87,9 @@ elif run_type == "run":
             #16 user Penelitian
             doc_cpu = 12
             doc_ram = "55g"
+        elif hari == "11":
+            doc_cpu = 16
+            doc_ram = "60g"
         
         folder_location = Config().master_userdir_path 
         user_container_volume = folder_location + "/" + container_name
